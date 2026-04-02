@@ -39,42 +39,47 @@ from llm import llm_client
 from logger import info, debug
 from tools.tools import Tools
 
-def agent(prompt: str) -> str:
-    tools = Tools()  # 初始化工具注册
-    info(f"Received user prompt: {prompt}")
-    client = llm_client.LLMClient()
-    message = sys_prompt + "\n" + tools.describe_tools()  + "\n\n" + f"<user>{prompt}</<user>"
-    while True:
-        debug(f"Send message to LLM:\n{message}")
-        result = client.generate(message)
-        try:
-            debug(f"Raw response from LLM:\n{result}")
-            response_json = json.loads(result.response.replace("```json", "").replace("```", ""))
-            tool_calls = response_json.get("tool_calls", [])
-            if not tool_calls:
-                # 如果没有工具调用，返回最终答案
-                return response_json.get("response", result.response)
-            else:
-                thinking = result.thinking
-                info(f"LLM thinking: {thinking}")
-                message += f"\n<thinking>\n{thinking}\n</thinking>"
-                message += f"\n<tool_calls>\n{tool_calls}\n</tool_calls>"
-                tool_results = ["<tool_results>"]
-                for tool_call in tool_calls:
-                    debug(f"Tool call: {tool_call}")
-                    tool_result = tools.call_tool(tool_call.get("name", ""), **tool_call.get("input", {}))
-                    tool_results.append(json.dumps({
-                        "id": tool_call.get("id", ""),
-                        "result": tool_result
-                    }, ensure_ascii=False))
-                    debug(f"Tool result for '{tool_call.get('id', '')}' '{tool_call.get('name', '')}': {tool_result}")
-                tool_results.append("</tool_results>")
-                message += "\n" + "\n".join(tool_results)
-        except json.JSONDecodeError:
-            # 如果响应不是 JSON，直接返回原始响应
-            return result.response
+class Agent:
+    
+    def __init__(self):
+        self.tools = Tools()
+        self.client = llm_client.LLMClient()
+    
+
+    def run(self, prompt: str) -> str:
+        message = sys_prompt + "\n" + self.tools.describe_tools()  + "\n\n" + f"<user>{prompt}</<user>"
+        while True:
+            debug(f"Send message to LLM:\n{message}")
+            result = self.client.generate(message)
+            try:
+                debug(f"Raw response from LLM:\n{result}")
+                response_json = json.loads(result.response.replace("```json", "").replace("```", ""))
+                tool_calls = response_json.get("tool_calls", [])
+                if not tool_calls:
+                    # 如果没有工具调用，返回最终答案
+                    return result.response
+                else:
+                    thinking = result.thinking
+                    info(f"LLM thinking: {thinking}")
+                    message += f"\n<thinking>\n{thinking}\n</thinking>"
+                    message += f"\n<tool_calls>\n{tool_calls}\n</tool_calls>"
+                    tool_results = ["<tool_results>"]
+                    for tool_call in tool_calls:
+                        debug(f"Tool call: {tool_call}")
+                        tool_result = self.tools.call_tool(tool_call.get("name", ""), **tool_call.get("input", {}))
+                        tool_results.append(json.dumps({
+                            "id": tool_call.get("id", ""),
+                            "result": tool_result
+                        }, ensure_ascii=False))
+                        debug(f"Tool result for '{tool_call.get('id', '')}' '{tool_call.get('name', '')}': {tool_result}")
+                    tool_results.append("</tool_results>")
+                    message += "\n" + "\n".join(tool_results)
+            except json.JSONDecodeError:
+                # 如果响应不是 JSON，直接返回原始响应
+                return result.response
         
 if __name__ == "__main__":
     user_input = "在当前目录下, 创建一个叫 debug 的文件夹"
-    final_response = agent(user_input)
+    agent_instance = Agent()
+    final_response = agent_instance.run(user_input)
     info(f"Final Response: {final_response}")
