@@ -1,0 +1,8 @@
+{
+    "python.analysis.typeCheckingMode": "strict",
+    "python.languageServer": "Pylance",
+    "python.analysis.indexing": true,  // 关键：开启依赖索引
+    "python.analysis.autoImportCompletions": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python", // Windows: /Scripts/python.exe
+    "python.terminal.activateEnvironment": true,
+}

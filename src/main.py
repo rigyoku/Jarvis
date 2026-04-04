@@ -1,7 +1,7 @@
 import os
 os.environ["LOG_LEVEL"] = "WARNING"  # 设置日志级别为 WARNING
 
-from agent.index import Agent
+from agent.agent import Agent
 
 try:
     import readline

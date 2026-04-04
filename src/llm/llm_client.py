@@ -78,4 +78,4 @@ class LLMClient:
 if __name__ == "__main__":
     client = LLMClient()
     result = client.generate("你好")
-    print(result)
+    info(result.response)

@@ -1,4 +1,5 @@
-.vscode
+# .vscode
 logs
 __pycache__
 debug
+.DS_Store

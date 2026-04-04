@@ -10,7 +10,7 @@ class ColorFormatter(logging.Formatter):
     red = "\033[31m"
     bold_red = "\033[1;31m"
     reset = "\033[0m"
-    format_str = "%(asctime)s - %(levelname)-8s - %(message)s"
+    format_str = "%(asctime)s - %(levelname)-8s - [%(filename)s:%(funcName)s] - %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
 
     FORMATS = {
@@ -44,7 +44,7 @@ __logger.addHandler(console_handler)
 # ----------------------
 # 文件 Handler DEBUG+ (LOG_DIR)
 # ----------------------
-formatter = logging.Formatter("%(asctime)s - %(levelname)-8s - %(message)s")
+formatter = logging.Formatter("%(asctime)s - %(levelname)-8s - [%(filename)s:%(funcName)s] - %(message)s")
 log_dir = os.getenv("LOG_DIR", "logs")
 os.makedirs(log_dir, exist_ok=True)
 log_name = time.strftime("%Y-%m-%d") + ".log"
@@ -71,19 +71,19 @@ for filename in os.listdir(log_dir):
                 os.remove(file_path)
 
 def debug(message: str) -> None:
-    __logger.debug(message)
+    __logger.debug(message, stacklevel=2)
 
-def info(message: str) -> None:
-    __logger.info(message)
+def info(message: str | bool) -> None:
+    __logger.info(message, stacklevel=2)
 
 def warning(message: str) -> None:
-    __logger.warning(message)
+    __logger.warning(message, stacklevel=2)
 
 def error(message: str) -> None:
-    __logger.error(message)
+    __logger.error(message, stacklevel=2)
 
 def critical(message: str) -> None:
-    __logger.critical(message)
+    __logger.critical(message, stacklevel=2)
         
 if __name__ == "__main__":
     __logger.debug("This is a debug message.")

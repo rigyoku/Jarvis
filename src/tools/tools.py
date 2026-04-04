@@ -45,13 +45,14 @@ class Tools:
         """
         返回一个字符串, 描述所有注册的工具函数及其功能
         """
-        descriptions: list[str] = []
-        descriptions.append("<tools>")
+        descriptions: list[tuple[str, int]] = []
         for tool in self.__tools:
             desc = getattr(tool, "__tool_description__", "No description")
-            descriptions.append(f"{tool.__name__}: {desc}")
-        descriptions.append("</tools>")
-        return "\n".join(descriptions)
+            sort_value = getattr(tool, "__tool_sort__", None) or 0
+            descriptions.append((f"{tool.__name__}: {desc}", sort_value))
+        # 根据sort属性排序, 没有sort属性的工具默认排序为0
+        descriptions.sort(key=lambda x: x[1])
+        return f"<tools>\n{"".join([desc[0] + '\n' for desc in descriptions])}</tools>"
 
     def call_tool(self, name: str, **kwargs: Any) -> Any:
         """
@@ -71,14 +72,13 @@ class Tools:
         raise ValueError(f"Error: Tool '{name}' not found")
 
 
-# @decorator.tool("这是一个测试工具函数")
-# def test_tool(param: str):
-#     print(param)
-#     return f"Received: {param}"
+# 解开下面的注释, 测试工具注册和调用功能
+@decorator.tool("这是一个测试工具函数")
+def test_tool(param: str):
+    info(param)
+    return f"Received: {param}"
 
 if __name__ == "__main__":
-
     tools = Tools()
-
-    print(tools.describe_tools())
-    print(tools.call_tool("test_tool", param="Hello, World!"))
+    info(tools.describe_tools())
+    info(tools.call_tool("test_tool", param="Hello, World!"))

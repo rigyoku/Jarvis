@@ -1,6 +1,12 @@
 import threading
 from typing import Callable, Any, TypeVar, Type
 
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+
+from logger import info
+
 # 定义泛型类型，用于保留原始类的类型信息
 T = TypeVar("T")
 
@@ -32,8 +38,8 @@ if __name__ == "__main__":
     class MyClass:
         def __init__(self, value: int) -> None:
             self.value = value
-            print(f"MyClass instance created with value: {value}")
+            info(f"MyClass instance created with value: {value}")
 
     obj1 = MyClass(10)
     obj2 = MyClass(20)
-    print(obj1 is obj2)
+    info(obj1 is obj2)
