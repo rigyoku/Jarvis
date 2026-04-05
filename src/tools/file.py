@@ -1,10 +1,9 @@
 import os
-
+from langchain.tools import tool
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-import decorator
 from logger import info
 
 # 工作目录根路径
@@ -28,7 +27,7 @@ def _is_path_safe(file_path: str) -> tuple[bool, str, Path | None]:
     except Exception as e:
         return False, f"路径解析错误: {str(e)}", None
 
-@decorator.tool("读取文件内容的工具函数.")
+@tool
 def read_file(file_path: str) -> str:
     """
     读取文件内容
@@ -73,7 +72,7 @@ def read_file(file_path: str) -> str:
         return f"Error: 读取文件失败 - {str(e)}"
 
 
-@decorator.tool("局部更新文件内容的工具函数.")
+@tool
 def update_file(file_path: str, old_content: str, new_content: str) -> str:
     """
     局部更新文件内容
@@ -126,7 +125,7 @@ def update_file(file_path: str, old_content: str, new_content: str) -> str:
         return f"Error: 更新文件失败 - {str(e)}"
 
 
-@decorator.tool("写入文件内容的工具函数.")
+@tool
 def write_file(file_path: str, content: str) -> str:
     """
     写入文件内容
@@ -161,28 +160,50 @@ if __name__ == "__main__":
     test_file = "debug/test_file.txt"
     
     # 测试写入文件
-    info(write_file(test_file, "Hello World"))
+    info(write_file.invoke({
+        "file_path": test_file, 
+        "content": "Hello World"
+    }))
     
     # 测试读取文件
-    info(read_file(test_file))
+    info(read_file.invoke({
+        "file_path": test_file
+    }))
     
     # 测试更新文件
-    info(update_file(test_file, "World", "Jarvis"))
+    info(update_file.invoke({
+        "file_path": test_file,
+        "old_content": "World",
+        "new_content": "Jarvis"
+    }))
     
     # 再次读取文件验证更新
-    info(read_file(test_file))
+    info(read_file.invoke({
+        "file_path": test_file
+    }))
     
     # 测试文件工具函数
     test_file = "/tmp/test_dir/test_file.txt"
     
     # 测试写入文件
-    info(write_file(test_file, "Hello World"))
+    info(write_file.invoke({
+        "file_path": test_file, 
+        "content": "Hello World"
+    }))
     
     # 测试读取文件
-    info(read_file(test_file))
+    info(read_file.invoke({
+        "file_path": test_file
+    }))
     
     # 测试更新文件
-    info(update_file(test_file, "World", "Jarvis"))
+    info(update_file.invoke({
+        "file_path": test_file,
+        "old_content": "World",
+        "new_content": "Jarvis"
+    }))
     
     # 再次读取文件验证更新
-    info(read_file(test_file))
+    info(read_file.invoke({
+        "file_path": test_file
+    }))

@@ -1,3 +1,4 @@
+from langchain.tools import tool
 from pathlib import Path
 from enum import Enum
 from typing import List
@@ -5,7 +6,6 @@ from typing import List
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
-import decorator
 from logger import info, critical
 
 class Status(Enum):
@@ -32,7 +32,7 @@ def clean_todo():
     global __todo
     __todo = []
 
-@decorator.tool("列出所有待办项目")
+@tool
 def list_todo() -> str:
     """
     列出所有待办项目
@@ -41,7 +41,7 @@ def list_todo() -> str:
     """
     return str(__todo)
 
-@decorator.tool("""新增/修改待办项目内容""")
+@tool
 def update_todo(id: int, context: str, status: Status) -> str:
     """
     新增或修改待办项目内容
@@ -75,6 +75,10 @@ if __name__ == "__main__":
     clean_todo()
     __todo.append(Item(1, "完成项目A"))
     __todo.append(Item(2, "完成项目B"))
-    info("初始待办列表: " + str(list_todo()))
-    update_todo(1, "完成项目A - 已更新", Status.DOING)
-    info("更新后待办列表: " + str(list_todo()))
+    info("初始待办列表: " + str(list_todo.invoke({})))
+    update_todo.invoke({
+        "id": 1,
+        "context": "完成项目A - 已更新",
+        "status": Status.DOING
+    })
+    info("更新后待办列表: " + str(list_todo.invoke({})))

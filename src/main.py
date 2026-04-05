@@ -1,5 +1,6 @@
 import os
 os.environ["LOG_LEVEL"] = "WARNING"  # 设置日志级别为 WARNING
+from langchain_openai import ChatOpenAI
 
 from agent.agent import Agent
 
@@ -15,13 +16,18 @@ except ImportError:
     pass
 
 def main():
+    llm_client = ChatOpenAI(
+        model="glm-5",
+        openai_api_key=os.getenv("ZHIPUAI_API_KEY", "your-zhipuai-api-key"), # type: ignore
+        openai_api_base="https://open.bigmodel.cn/api/paas/v4/", # type: ignore
+    )
+    agent_instance = Agent(llm_client)
     print("请输入你的需求，输入 '\\q' 退出。\n================================\n")
     while True:
         user_input = input("😊 >> ")
         if user_input.lower() == "\\q":
             print("\nBye~\n")
             break
-        agent_instance = Agent()
         final_response = agent_instance.run(user_input)
         print(f"\n🤖 >> {final_response}\n")
 

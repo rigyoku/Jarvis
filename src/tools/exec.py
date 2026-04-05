@@ -1,3 +1,4 @@
+from langchain.tools import tool
 import subprocess
 import re
 
@@ -5,7 +6,6 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-import decorator
 from logger import info
 
 # 危险命令黑名单
@@ -46,7 +46,7 @@ def _is_command_safe(command: str) -> tuple[bool, str]:
     
     return True, ""
 
-@decorator.tool("执行系统命令的工具函数. ")
+@tool
 def exec(command: str) -> str:
     """
     执行一个系统命令
@@ -76,6 +76,10 @@ def exec(command: str) -> str:
 
 if __name__ == "__main__":
     # 测试安全命令
-    info(exec("echo Hello World"))
+    info(exec.invoke({
+        "command": "echo Hello World"
+    }))
     # 测试危险命令
-    info(exec("rm -rf /"))
+    info(exec.invoke({
+        "command": "rm -rf /"
+    }))
