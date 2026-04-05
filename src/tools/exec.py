@@ -46,9 +46,15 @@ def _is_command_safe(command: str) -> tuple[bool, str]:
     
     return True, ""
 
-@decorator.tool("执行系统命令的工具函数. 接收参数 command, 是一个字符串, 表示要执行的系统命令. 返回值是一个字符串, 包含命令的输出结果或者错误信息. 禁止执行危险的系统命令. 该工具为兜底工具, 尽可能使用其他工具来完成任务, 只有在确实需要执行系统命令时才使用该工具.", sort=100)
+@decorator.tool("执行系统命令的工具函数. ")
 def exec(command: str) -> str:
-    """执行一个系统命令（带安全检查）"""
+    """
+    执行一个系统命令
+    Args:
+        command: 要执行的系统命令字符串
+    Returns:
+        命令的输出结果或者错误信息
+    """
     # 安全检查
     is_safe, error_msg = _is_command_safe(command)
     if not is_safe:

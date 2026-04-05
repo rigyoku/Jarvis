@@ -16,6 +16,6 @@ ollama run qwen3.5:4b
 
 ## run
 ```bash
-LLM_MODEL=gemma4:e2b
+# export LLM_MODEL=gemma4:e2b
 uv run src/main.py
 ```

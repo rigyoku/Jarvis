@@ -1,7 +1,7 @@
 import os
 import glob
 import importlib.util
-from typing import Callable, Any
+from typing import Callable, Any, List
 
 import sys
 from pathlib import Path
@@ -13,7 +13,7 @@ from logger import info, debug, error
 @decorator.singleton
 class Tools:
 
-    __tools: list[Callable[..., Any]] = []
+    __tools: List[Callable[..., Any]] = []
 
     def __init__(self) -> None:
         self.__register_tools()
@@ -70,13 +70,19 @@ class Tools:
                     return f"Error: {str(e)}"
         error(f"Error: Tool '{name}' not found")
         raise ValueError(f"Error: Tool '{name}' not found")
+    
+    def get_tools(self) -> List[Callable[..., Any]]:
+        """
+        获取所有注册的工具函数
+        """
+        return self.__tools
 
 
 # 解开下面的注释, 测试工具注册和调用功能
-@decorator.tool("这是一个测试工具函数")
-def test_tool(param: str):
-    info(param)
-    return f"Received: {param}"
+# @decorator.tool("这是一个测试工具函数")
+# def test_tool(param: str):
+#     info(param)
+#     return f"Received: {param}"
 
 if __name__ == "__main__":
     tools = Tools()

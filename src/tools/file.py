@@ -28,9 +28,15 @@ def _is_path_safe(file_path: str) -> tuple[bool, str, Path | None]:
     except Exception as e:
         return False, f"路径解析错误: {str(e)}", None
 
-@decorator.tool("读取文件内容的工具函数. 接收参数 file_path, 是一个字符串, 表示要读取的文件路径. 返回值是一个字符串, 包含文件内容或者错误信息.")
+@decorator.tool("读取文件内容的工具函数.")
 def read_file(file_path: str) -> str:
-    """读取文件内容（带安全检查）"""
+    """
+    读取文件内容
+    Args:
+        file_path: 要读取的文件路径
+    Returns:
+        文件内容或者错误信息
+    """
     # 安全检查
     is_safe, error_msg, resolved_path = _is_path_safe(file_path)
     if not is_safe:
@@ -67,9 +73,17 @@ def read_file(file_path: str) -> str:
         return f"Error: 读取文件失败 - {str(e)}"
 
 
-@decorator.tool("局部更新文件内容的工具函数. 接收参数 file_path (字符串, 要更新的文件路径), old_content (字符串, 要替换的旧内容) 和 new_content (字符串, 替换后的新内容). 返回值是一个字符串, 包含成功信息或者错误信息.")
+@decorator.tool("局部更新文件内容的工具函数.")
 def update_file(file_path: str, old_content: str, new_content: str) -> str:
-    """局部更新文件内容（带安全检查）"""
+    """
+    局部更新文件内容
+    Args:
+        file_path: 要更新的文件路径
+        old_content: 要替换的旧内容
+        new_content: 替换后的新内容
+    Returns:
+        成功信息或者错误信息
+    """
     # 安全检查
     is_safe, error_msg, resolved_path = _is_path_safe(file_path)
     if not is_safe:
@@ -112,9 +126,16 @@ def update_file(file_path: str, old_content: str, new_content: str) -> str:
         return f"Error: 更新文件失败 - {str(e)}"
 
 
-@decorator.tool("写入文件内容的工具函数. 接收参数 file_path (字符串, 要写入的文件路径) 和 content (字符串, 要写入的内容). 返回值是一个字符串, 包含成功信息或者错误信息.")
+@decorator.tool("写入文件内容的工具函数.")
 def write_file(file_path: str, content: str) -> str:
-    """写入文件内容（带安全检查）"""
+    """
+    写入文件内容
+    Args:
+        file_path: 要写入的文件路径
+        content: 要写入的内容
+    Returns:
+        成功信息或者错误信息
+    """
     # 安全检查
     is_safe, error_msg, resolved_path = _is_path_safe(file_path)
     if not is_safe:
