@@ -12,6 +12,7 @@ uv sync
 ## zlm
 ```bash
 export ZHIPUAI_API_KEY=xxxx
+export LLM_MODEL=glm-4.7-flash
 ```
 
 ## run

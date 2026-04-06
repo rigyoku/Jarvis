@@ -2,7 +2,7 @@ import os
 os.environ["LOG_LEVEL"] = "WARNING"  # 设置日志级别为 WARNING
 from langchain_openai import ChatOpenAI
 
-from agent.agent import Agent
+from agents.agent import Agent
 
 try:
     import readline
@@ -17,7 +17,7 @@ except ImportError:
 
 def main():
     llm_client = ChatOpenAI(
-        model="glm-5",
+        model=os.getenv("LLM_MODEL", "glm-4.7-flash"),
         openai_api_key=os.getenv("ZHIPUAI_API_KEY", "your-zhipuai-api-key"), # type: ignore
         openai_api_base="https://open.bigmodel.cn/api/paas/v4/", # type: ignore
     )
