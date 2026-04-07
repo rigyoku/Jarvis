@@ -18,8 +18,8 @@ except ImportError:
 def main():
     llm_client = ChatOpenAI(
         model=os.getenv("LLM_MODEL", "glm-4.7-flash"),
-        openai_api_key=os.getenv("ZHIPUAI_API_KEY", "your-zhipuai-api-key"), # type: ignore
-        openai_api_base="https://open.bigmodel.cn/api/paas/v4/", # type: ignore
+        openai_api_key=os.getenv("LLM_API_KEY", "your-api-key"), # type: ignore
+        openai_api_base=os.getenv("LLM_API_BASE", "https://open.bigmodel.cn/api/paas/v4/"), # type: ignore
     )
     agent_instance = Agent(llm_client)
     print("请输入你的需求，输入 '\\q' 退出。\n================================\n")

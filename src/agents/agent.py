@@ -19,15 +19,7 @@ class Agent:
             write_file,
             exec,
         ]
-        self.sub_agent = BaseAgent(llm_client.model_copy(), """
-你的角色是执行具体任务的子Agent. 根据主Agent的指示, 你将执行具体的任务, 并将任务结果汇总返回给主Agent.
-""", [
-            read_file,
-            update_file,
-            write_file,
-            exec,
-        ])
-        
+
         @tool
         def run_sub_agent(prompt: str) -> str:
             """
@@ -37,7 +29,14 @@ class Agent:
             Returns:
                 子Agent的输出结果
             """
-            return self.sub_agent.run(prompt)
+            return BaseAgent(llm_client.model_copy(), """
+你的角色是执行具体任务的子Agent. 根据主Agent的指示, 你将执行具体的任务, 并将任务结果汇总返回给主Agent.
+""", [
+            read_file,
+            update_file,
+            write_file,
+            exec,
+        ]).run(prompt)
 
         self.main_agent = BaseAgent(llm_client.model_copy(), """
 你的角色是一名人工智能助手. 你的任务是理解用户需求, 并根据需求委派子Agent来执行具体任务.
@@ -53,8 +52,8 @@ if __name__ == "__main__":
     user_input = "当前工程的主要技术栈是什么"
     llm_client = ChatOpenAI(
         model=os.getenv("LLM_MODEL", "glm-4.7-flash"),
-        openai_api_key=os.getenv("ZHIPUAI_API_KEY", "your-zhipuai-api-key"), # type: ignore
-        openai_api_base="https://open.bigmodel.cn/api/paas/v4/", # type: ignore
+        openai_api_key=os.getenv("LLM_API_KEY", "your-api-key"), # type: ignore
+        openai_api_base=os.getenv("LLM_API_BASE", "https://open.bigmodel.cn/api/paas/v4/"), # type: ignore
     )
     agent_instance = Agent(llm_client)
     final_response = agent_instance.run(user_input)

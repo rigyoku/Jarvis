@@ -116,8 +116,8 @@ if __name__ == "__main__":
     user_input = "列出当前文件夹下的文件, 然后再创建一个叫 debug 的文件夹"
     llm_client = ChatOpenAI(
         model=os.getenv("LLM_MODEL", "glm-4.7-flash"),
-        openai_api_key=os.getenv("ZHIPUAI_API_KEY", "your-zhipuai-api-key"), # type: ignore
-        openai_api_base="https://open.bigmodel.cn/api/paas/v4/", # type: ignore
+        openai_api_key=os.getenv("LLM_API_KEY", "your-api-key"), # type: ignore
+        openai_api_base=os.getenv("LLM_API_BASE", "https://open.bigmodel.cn/api/paas/v4/"), # type: ignore
     )
     from tools.todo import list_todo, update_todo
     from tools.file import read_file, update_file, write_file
