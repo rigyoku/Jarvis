@@ -10,7 +10,7 @@ from logger import info
 WORKSPACE_ROOT = os.getcwd()
 
 def _is_path_safe(file_path: str) -> tuple[bool, str, Path | None]:
-    """检查文件路径是否安全，防止路径穿越
+    """检查文件路径是否安全,防止路径穿越
     
     Returns:
         (is_safe, error_message, resolved_path)
@@ -65,7 +65,7 @@ def read_file(file_path: str) -> str:
         try:
             with open(resolved_path, 'rb') as f:
                 content = f.read()
-            return f"Success: 文件为二进制文件，大小 {len(content)} 字节"
+            return f"Success: 文件为二进制文件,大小 {len(content)} 字节"
         except Exception as e:
             return f"Error: 读取文件失败 - {str(e)}"
     except Exception as e:
@@ -118,9 +118,9 @@ def update_file(file_path: str, old_content: str, new_content: str) -> str:
         with open(resolved_path, 'w', encoding='utf-8') as f:
             f.write(updated_content)
         
-        return f"Success: 文件更新成功，共替换 {count} 处内容 {resolved_path}"
+        return f"Success: 文件更新成功,共替换 {count} 处内容 {resolved_path}"
     except UnicodeDecodeError:
-        return f"Error: 文件不是文本文件，无法进行文本替换"
+        return f"Error: 文件不是文本文件,无法进行文本替换"
     except Exception as e:
         return f"Error: 更新文件失败 - {str(e)}"
 

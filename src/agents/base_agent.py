@@ -3,6 +3,7 @@ import sys
 import os
 from pathlib import Path
 from typing import Any, List
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from langchain.messages import HumanMessage, SystemMessage, ToolMessage, AIMessage
 
@@ -12,7 +13,7 @@ from logger import info, debug
 
 class BaseAgent:
     
-    def __init__(self, llm_client: ChatOpenAI, sys_prompt: str, tools: List[Any], max_loop: int = 20):
+    def __init__(self, llm_client: ChatOpenAI | ChatGoogleGenerativeAI, sys_prompt: str, tools: List[Any], max_loop: int = 20):
         self.tools = tools
         self.sys_prompt = sys_prompt
         self.max_loop = max_loop
@@ -58,7 +59,7 @@ Raw response from LLM
             tool_calls = llm_response.tool_calls
             
             if not tool_calls:
-                # 如果没有工具调用，返回最终答案
+                # 如果没有工具调用,返回最终答案
                 messages.append(AIMessage(content=llm_response.content))
                 return llm_response.content # type: ignore
             else:
